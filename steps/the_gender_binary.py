@@ -15,10 +15,7 @@ def the_gender_binary():
     con = sql.connect(database_path)
     cur = con.cursor()
 
-    cur.execute('SELECT * FROM Players '
-                'WHERE Gender = "andy" OR '
-                'Gender = "mostly_male" OR '
-                'Gender = "mostly_female"')
+    cur.execute('SELECT * FROM Players WHERE Gender = "andy"')
 
     unknown_genders = cur.fetchall()
 
@@ -26,17 +23,19 @@ def the_gender_binary():
 
         id, name, classification = player
 
-        while (classification != 'male') and (classification != 'female'):
+        while ((classification != 'male') and
+               (classification != 'female') and
+               (classification != 'skip')):
             print name,
             print 'was classified as',
             print classification
             print _url_for_id(id)
             classification = raw_input('What gender? ')
 
-        cur.execute('UPDATE Players SET Gender=? WHERE Id=?',
-                    (classification, id))
-
-        con.commit()
+        if classification != 'skip':
+            cur.execute('UPDATE Players SET Gender=? WHERE Id=?',
+                        (classification, id))
+            con.commit()
 
     con.close()
 
