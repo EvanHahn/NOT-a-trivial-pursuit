@@ -9,9 +9,8 @@ import sqlite3 as sql
 
 def populate_tables():
 
-    # MAX_GAME_ID = 4596
+    MAX_GAME_ID = 4596
     # MAX_PLAYER_ID = 9268
-    MAX_GAME_ID = 1
 
     database_path = os.path.abspath('archive.db')
 
@@ -22,7 +21,7 @@ def populate_tables():
 
     for game_id in xrange(1, MAX_GAME_ID + 1):
 
-        print 'Parsing game ' + str(game_id) + '...'
+        print 'Parsing game ' + str(game_id) + '...',
 
         game_url = ('http://www.j-archive.com/showgame.php?game_id=' +
                     str(game_id))
@@ -56,12 +55,11 @@ def populate_tables():
                     'VALUES (?, ?, ?)', (game_id, date, comments,))
 
         player_els = soup.find_all('p', class_='contestants')
-        for player_el in player_els:
+        for player_score_index, player_el in enumerate(player_els):
 
             player_link = player_el.find('a')
             player_name = player_link.text
-            player_first_name = player_name.split()[0]
-            player_gender = gender_detector.get_gender(player_first_name)
+            player_gender = gender_detector.get_gender(player_name.split()[0])
             player_id = re.sub(r'\D', '', player_link['href'])
 
             cur.execute('INSERT OR IGNORE INTO Players (Id, Name, Gender) '
@@ -70,11 +68,6 @@ def populate_tables():
                             player_name,
                             player_gender,
                         ))
-
-            player_score_index = None
-            for index, td in enumerate(double_names_tds):
-                if td.text == player_first_name:
-                    player_score_index = index
 
             wagered_score = re.sub(r'\D', '',
                                    double_scores_tds[player_score_index].text)
@@ -91,5 +84,6 @@ def populate_tables():
                         ))
 
         con.commit()
+        print 'parsed.'
 
     con.close()
