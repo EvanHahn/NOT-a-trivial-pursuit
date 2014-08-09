@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from requests import get
 import os
-import parsedatetime
 import re
 import sexmachine.detector as sexmachine
 import sqlite3 as sql
@@ -37,13 +36,11 @@ def populate_tables():
             double_rows = (soup.find(id='double_jeopardy_round')
                            .find_all('table')[-1]
                            .find_all('tr'))
-            double_names_tds = double_rows[0].find_all('td')
             double_scores_tds = double_rows[1].find_all('td')
 
             final_rows = (soup.find(id='final_jeopardy_round')
                           .find_all('table')[-1]
                           .find_all('tr'))
-            final_names_tds = final_rows[0].find_all('td')
             final_scores_tds = final_rows[1].find_all('td')
         except:
             continue
@@ -87,3 +84,6 @@ def populate_tables():
         print 'parsed.'
 
     con.close()
+
+if __name__ == '__main__':
+    populate_tables()
