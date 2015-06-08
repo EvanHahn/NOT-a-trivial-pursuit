@@ -15,13 +15,17 @@ def the_gender_binary():
     con = sql.connect(database_path)
     cur = con.cursor()
 
-    cur.execute('SELECT * FROM Players WHERE Gender = "andy"')
+    cur.execute('SELECT * FROM Players WHERE Gender = "andy" or (Gender <> "female" and Gender <> "male")')
 
     unknown_genders = cur.fetchall()
 
     for player in unknown_genders:
 
         id, name, classification = player
+
+        check = classification.split('_')
+        if check[0] == 'mostly':
+            classification = check[1]
 
         while ((classification != 'male') and
                (classification != 'female') and

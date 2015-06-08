@@ -8,7 +8,7 @@ import sqlite3 as sql
 
 def populate_tables():
 
-    MAX_GAME_ID = 4596
+    MAX_GAME_ID = 4786
     # MAX_PLAYER_ID = 9268
 
     database_path = os.path.abspath('archive.db')
@@ -18,7 +18,7 @@ def populate_tables():
 
     gender_detector = sexmachine.Detector()
 
-    for game_id in xrange(1, MAX_GAME_ID + 1):
+    for game_id in xrange(4113, MAX_GAME_ID + 1):
 
         print 'Parsing game ' + str(game_id) + '...',
 
